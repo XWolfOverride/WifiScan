@@ -1,5 +1,4 @@
-﻿using NativeWifi;
-using System;
+﻿using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -14,7 +13,6 @@ namespace WifiScan
 {
     public partial class Form1 : Form
     {
-        private WlanClient client = new WlanClient();
 
         public Form1()
         {
@@ -26,51 +24,46 @@ namespace WifiScan
 
         #region Tree Management
 
-        private TreeNode GetNodeFor(WlanClient.WlanInterface wlanIface)
+        private TreeNode GetNodeFor(WifiDevice dev)
         {
             foreach (TreeNode node in tvTree.Nodes)
-            {
-                Guid? nguid = node.Tag as Guid?;
-                if (nguid == wlanIface.InterfaceGuid)
+                if (dev == node.Tag)
                     return node;
-            }
-            TreeNode nnode = tvTree.Nodes.Add(wlanIface.InterfaceDescription);
-            nnode.Tag = wlanIface.InterfaceGuid;
+            TreeNode nnode = tvTree.Nodes.Add(dev.Name);
+            nnode.Tag = dev;
             return nnode;
         }
 
-        private TreeNode GetNodeFor(Wlan.WlanBssEntry network, TreeNodeCollection nodes)
+        private TreeNode GetNodeFor(Wifi wifi, TreeNodeCollection nodes)
         {
-            string nbssid = network.GetBSSIDHex();
             foreach (TreeNode node in nodes)
             {
-                String bssid = node.Tag as String;
-                if (bssid == nbssid)
+                if (wifi == node.Tag)
                     return node;
             }
-            TreeNode nnode = nodes.Add(network.GetSSID());
-            nnode.Tag = nbssid;
+            TreeNode nnode = nodes.Add(wifi.SSID);
+            nnode.Tag = wifi;
             nnode.ImageIndex = 1;
             nnode.SelectedImageIndex = 1;
+            nnode.ForeColor = wifi.Color;
             return nnode;
         }
-        
+
         private void PopulateTree()
         {
             ArrayList nodes = new ArrayList(tvTree.Nodes);
-            foreach (WlanClient.WlanInterface wlanIface in client.Interfaces)
+            foreach (WifiDevice dev in WifiDevice.List())
             {
-                TreeNode node = GetNodeFor(wlanIface);
+                TreeNode node = GetNodeFor(dev);
                 nodes.Remove(node);
-                Wlan.WlanBssEntry[] wlanBssEntries = wlanIface.GetNetworkBssList();
-                ArrayList netnodes = new ArrayList(wlanBssEntries);
-                foreach (Wlan.WlanBssEntry network in wlanBssEntries)
+                Wifi[] wifis = dev.Networks;
+                ArrayList netnodes = new ArrayList(node.Nodes);
+                foreach (Wifi wifi in wifis)
                 {
-                    TreeNode nwnode = GetNodeFor(network, node.Nodes);
+                    TreeNode nwnode = GetNodeFor(wifi, node.Nodes);
                     netnodes.Remove(nwnode);
-                    network.Register();
                 }
-                foreach (TreeNode nwdel in nodes)
+                foreach (TreeNode nwdel in netnodes)
                     node.Nodes.Remove(nwdel);
             }
             // remove old
@@ -78,20 +71,20 @@ namespace WifiScan
                 tvTree.Nodes.Remove(ndel);
             tvTree.ExpandAll();
             // Take snapshoot of current wifi status and deletes registrations
-            Wifi.Snapshoot();
         }
 
         #endregion
 
         private void WifiTimer_Tick(object sender, EventArgs e)
         {
+            WifiApi.Snapshoot();
             PopulateTree();
             scMain.Panel2.Invalidate();
         }
 
         private void splitContainer1_Panel2_Paint(object sender, PaintEventArgs e)
         {
-            Wifi.Paint(e.Graphics, scMain.Panel2.ClientSize);
+            WifiApi.Paint(e.Graphics, scMain.Panel2.ClientSize);
         }
     }
 }
