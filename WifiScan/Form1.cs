@@ -5,6 +5,7 @@ using System.ComponentModel;
 using System.Data;
 using System.Drawing;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -13,13 +14,25 @@ namespace WifiScan
 {
     public partial class Form1 : Form
     {
-
         public Form1()
         {
             InitializeComponent();
             AutoScaleDimensions = new SizeF(96F, 96F);
             AutoScaleMode = AutoScaleMode.Dpi;
             PopulateTree();
+            DblBuf();
+        }
+
+        private void DblBuf()
+        {
+            var objMethodInfo = typeof(Control).GetMethod("SetStyle", BindingFlags.NonPublic | BindingFlags.Instance);
+
+            var objArgs = new object[] { ControlStyles.AllPaintingInWmPaint |
+                             ControlStyles.UserPaint |
+                             ControlStyles.OptimizedDoubleBuffer, true };
+
+            objMethodInfo.Invoke(scMain.Panel1, objArgs);
+            objMethodInfo.Invoke(scMain.Panel2, objArgs);
         }
 
         #region Tree Management
@@ -55,6 +68,7 @@ namespace WifiScan
             foreach (WifiDevice dev in WifiDevice.List())
             {
                 TreeNode node = GetNodeFor(dev);
+                bool empty = node.Nodes.Count == 0;
                 nodes.Remove(node);
                 Wifi[] wifis = dev.Networks;
                 ArrayList netnodes = new ArrayList(node.Nodes);
@@ -65,12 +79,12 @@ namespace WifiScan
                 }
                 foreach (TreeNode nwdel in netnodes)
                     node.Nodes.Remove(nwdel);
+                if (empty && node.Nodes.Count > 0)
+                    node.Expand();
             }
             // remove old
             foreach (TreeNode ndel in nodes)
                 tvTree.Nodes.Remove(ndel);
-            tvTree.ExpandAll();
-            // Take snapshoot of current wifi status and deletes registrations
         }
 
         #endregion

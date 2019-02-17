@@ -16,13 +16,14 @@ namespace WifiScan
         private string ssid;
         private string bssid;
         private DateTime lastSeen;
-        private Color color = Color.FromArgb(WifiApi.rnd.Next(200) + 56, WifiApi.rnd.Next(200) + 56, WifiApi.rnd.Next(200) + 56);
+        private Color color;
 
         public Wifi(Wlan.WlanBssEntry network)
         {
             this.network = network;
             bssid = network.GetBSSIDHex();
             ssid = network.GetSSID();
+            color = WifiApi.ColorForBSSID(bssid);
             Notify();
         }
 
@@ -34,6 +35,11 @@ namespace WifiScan
         public WifiInfo GetInfo()
         {
             return new WifiInfo(this);
+        }
+
+        public void Update(Wlan.WlanBssEntry network)
+        {
+            this.network = network;
         }
 
         public string BSSID => bssid;

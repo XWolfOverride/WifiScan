@@ -21,6 +21,7 @@ namespace WifiScan
         private static Brush bText = new SolidBrush(Color.Silver);
 
         static List<List<WifiInfo>> snap = new List<List<WifiInfo>>();
+        static Dictionary<string, Color> colors = new Dictionary<string, Color>();
 
         #region Network Extensions
         public static string GetBSSIDHex(this Wlan.WlanBssEntry network)
@@ -48,10 +49,18 @@ namespace WifiScan
 
         #endregion
 
+        public static Color ColorForBSSID(string bssid)
+        {
+            Color c;
+            if (colors.TryGetValue(bssid, out c))
+                return c;
+            return colors[bssid] = Color.FromArgb(rnd.Next(220) + 36, rnd.Next(220) + 36, rnd.Next(220) + 36);
+        }
+
         public static void Snapshoot()
         {
             List<WifiInfo> step = new List<WifiInfo>();
-            foreach(Wifi wifi in WifiDevice.FetchAllNetworks())
+            foreach (Wifi wifi in WifiDevice.FetchAllNetworks())
             {
                 step.Add(wifi.GetInfo());
             }
@@ -95,11 +104,10 @@ namespace WifiScan
             }
             //Draw Channels
             float chw6 = (sz.Width * 4) / 16f;
-
             for (int i = 1; i <= 14; i++)
             {
                 int x = (int)((sz.Width * (i + 1)) / 16f);
-                g.DrawString("" + i, font, bText, new PointF(x-10, sz.Height - (CHART_FOOT * scale)));
+                g.DrawString("" + i, font, bText, new PointF(x - 10, sz.Height - (CHART_FOOT * scale)));
                 g.DrawLine(pLineDark2, new PointF(x, sz.Height), new PointF(x, hh2));
                 List<WifiInfo> chw = GetNetworksInChannel(i);
                 foreach (WifiInfo wii in chw)
@@ -108,6 +116,34 @@ namespace WifiScan
                     Pen pw = new Pen(wii.Color, 2f);
                     g.DrawEllipse(pw, new RectangleF(x - (chw6 / 2), sz.Height - (he / 2f), chw6, he));
                 }
+            }
+            //Signal History
+            if (snap.Count < 2)
+                return;
+            int ii = snap.Count - 1;
+            int xx = sz.Width;
+            while (ii > 0 && xx > 0)
+            {
+                List<WifiInfo> wiis = snap[ii];
+                foreach (WifiInfo wii in wiis)
+                {
+                    List<WifiInfo> wolds = snap[ii - 1];
+                    WifiInfo wold = null;
+                    foreach (WifiInfo woldc in wolds)
+                        if (woldc.BSSID == wii.BSSID)
+                        {
+                            wold = woldc;
+                            break;
+                        }
+                    if (wold == null)
+                        continue;
+                    float he = hh2 - ((hh2 * wii.Signal) / 100f);
+                    float heo = hh2 - ((hh2 * wold.Signal) / 100f);
+                    Pen pw = new Pen(wii.Color, 2f);
+                    g.DrawLine(pw, new PointF(xx, he), new PointF(xx - 10, heo));
+                }
+                ii--;
+                xx -= 10;
             }
         }
         #endregion

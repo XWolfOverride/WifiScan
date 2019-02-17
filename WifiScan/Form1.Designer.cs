@@ -31,9 +31,10 @@
             this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form1));
             this.tvTree = new System.Windows.Forms.TreeView();
-            this.scMain = new System.Windows.Forms.SplitContainer();
             this.imageListDevices = new System.Windows.Forms.ImageList(this.components);
+            this.scMain = new System.Windows.Forms.SplitContainer();
             this.WifiTimer = new System.Windows.Forms.Timer(this.components);
+            this.panel1 = new System.Windows.Forms.Panel();
             ((System.ComponentModel.ISupportInitialize)(this.scMain)).BeginInit();
             this.scMain.Panel1.SuspendLayout();
             this.scMain.SuspendLayout();
@@ -47,8 +48,15 @@
             this.tvTree.Location = new System.Drawing.Point(0, 0);
             this.tvTree.Name = "tvTree";
             this.tvTree.SelectedImageIndex = 0;
-            this.tvTree.Size = new System.Drawing.Size(491, 567);
+            this.tvTree.Size = new System.Drawing.Size(491, 467);
             this.tvTree.TabIndex = 0;
+            // 
+            // imageListDevices
+            // 
+            this.imageListDevices.ImageStream = ((System.Windows.Forms.ImageListStreamer)(resources.GetObject("imageListDevices.ImageStream")));
+            this.imageListDevices.TransparentColor = System.Drawing.Color.Transparent;
+            this.imageListDevices.Images.SetKeyName(0, "iconfinder_network_card_82824.png");
+            this.imageListDevices.Images.SetKeyName(1, "iconfinder_wifi_2639756.ico");
             // 
             // scMain
             // 
@@ -59,6 +67,7 @@
             // scMain.Panel1
             // 
             this.scMain.Panel1.Controls.Add(this.tvTree);
+            this.scMain.Panel1.Controls.Add(this.panel1);
             // 
             // scMain.Panel2
             // 
@@ -67,18 +76,19 @@
             this.scMain.SplitterDistance = 491;
             this.scMain.TabIndex = 1;
             // 
-            // imageListDevices
-            // 
-            this.imageListDevices.ImageStream = ((System.Windows.Forms.ImageListStreamer)(resources.GetObject("imageListDevices.ImageStream")));
-            this.imageListDevices.TransparentColor = System.Drawing.Color.Transparent;
-            this.imageListDevices.Images.SetKeyName(0, "iconfinder_network_card_82824.png");
-            this.imageListDevices.Images.SetKeyName(1, "iconfinder_wifi_2639756.ico");
-            // 
             // WifiTimer
             // 
             this.WifiTimer.Enabled = true;
             this.WifiTimer.Interval = 1000;
             this.WifiTimer.Tick += new System.EventHandler(this.WifiTimer_Tick);
+            // 
+            // panel1
+            // 
+            this.panel1.Dock = System.Windows.Forms.DockStyle.Bottom;
+            this.panel1.Location = new System.Drawing.Point(0, 467);
+            this.panel1.Name = "panel1";
+            this.panel1.Size = new System.Drawing.Size(491, 100);
+            this.panel1.TabIndex = 2;
             // 
             // Form1
             // 
@@ -102,6 +112,7 @@
         private System.Windows.Forms.SplitContainer scMain;
         private System.Windows.Forms.ImageList imageListDevices;
         private System.Windows.Forms.Timer WifiTimer;
+        private System.Windows.Forms.Panel panel1;
     }
 }
 

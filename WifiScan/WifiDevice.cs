@@ -33,6 +33,7 @@ namespace WifiScan
             foreach (WlanClient.WlanInterface wlanIface in client.Interfaces)
             {
                 WifiDevice dev = GetFor(wlanIface);
+                dev.iface = wlanIface;
                 del.Remove(dev);
             }
             return new List<WifiDevice>(devices);
@@ -80,6 +81,7 @@ namespace WifiScan
             foreach (Wlan.WlanBssEntry network in wlanBssEntries)
             {
                 Wifi wifi = GetFor(network);
+                wifi.Update(network);
                 wifi.Notify();
             }
             Wifi[] all = networks.ToArray();

@@ -11,12 +11,14 @@ namespace WifiScan
     {
         public WifiInfo(Wifi wifi)
         {
+            BSSID = wifi.BSSID;
             SSID = wifi.SSID;
             Signal = wifi.Signal;
             Channel = wifi.Channel;
             Color = wifi.Color;
         }
 
+        public string BSSID { get; }
         public string SSID { get; }
         public uint Signal { get; }
         public uint Channel { get; }
