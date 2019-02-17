@@ -14,6 +14,11 @@ namespace WifiScan
         [STAThread]
         static void Main()
         {
+            try
+            {
+                WinAPI.SetProcessDPIAware();
+            }
+            catch { };
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
             Application.Run(new Form1());

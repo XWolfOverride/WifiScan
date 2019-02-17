@@ -29,12 +29,79 @@
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form1));
+            this.tvTree = new System.Windows.Forms.TreeView();
+            this.scMain = new System.Windows.Forms.SplitContainer();
+            this.imageListDevices = new System.Windows.Forms.ImageList(this.components);
+            this.WifiTimer = new System.Windows.Forms.Timer(this.components);
+            ((System.ComponentModel.ISupportInitialize)(this.scMain)).BeginInit();
+            this.scMain.Panel1.SuspendLayout();
+            this.scMain.SuspendLayout();
+            this.SuspendLayout();
+            // 
+            // tvTree
+            // 
+            this.tvTree.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.tvTree.ImageIndex = 0;
+            this.tvTree.ImageList = this.imageListDevices;
+            this.tvTree.Location = new System.Drawing.Point(0, 0);
+            this.tvTree.Name = "tvTree";
+            this.tvTree.SelectedImageIndex = 0;
+            this.tvTree.Size = new System.Drawing.Size(491, 567);
+            this.tvTree.TabIndex = 0;
+            // 
+            // scMain
+            // 
+            this.scMain.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.scMain.Location = new System.Drawing.Point(0, 0);
+            this.scMain.Name = "scMain";
+            // 
+            // scMain.Panel1
+            // 
+            this.scMain.Panel1.Controls.Add(this.tvTree);
+            // 
+            // scMain.Panel2
+            // 
+            this.scMain.Panel2.Paint += new System.Windows.Forms.PaintEventHandler(this.splitContainer1_Panel2_Paint);
+            this.scMain.Size = new System.Drawing.Size(1237, 567);
+            this.scMain.SplitterDistance = 491;
+            this.scMain.TabIndex = 1;
+            // 
+            // imageListDevices
+            // 
+            this.imageListDevices.ImageStream = ((System.Windows.Forms.ImageListStreamer)(resources.GetObject("imageListDevices.ImageStream")));
+            this.imageListDevices.TransparentColor = System.Drawing.Color.Transparent;
+            this.imageListDevices.Images.SetKeyName(0, "iconfinder_network_card_82824.png");
+            this.imageListDevices.Images.SetKeyName(1, "iconfinder_wifi_2639756.ico");
+            // 
+            // WifiTimer
+            // 
+            this.WifiTimer.Enabled = true;
+            this.WifiTimer.Interval = 1000;
+            this.WifiTimer.Tick += new System.EventHandler(this.WifiTimer_Tick);
+            // 
+            // Form1
+            // 
+            this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 20F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(800, 450);
-            this.Text = "Form1";
+            this.ClientSize = new System.Drawing.Size(1237, 567);
+            this.Controls.Add(this.scMain);
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
+            this.Name = "Form1";
+            this.Text = "WifiScan";
+            this.scMain.Panel1.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.scMain)).EndInit();
+            this.scMain.ResumeLayout(false);
+            this.ResumeLayout(false);
+
         }
 
         #endregion
+
+        private System.Windows.Forms.TreeView tvTree;
+        private System.Windows.Forms.SplitContainer scMain;
+        private System.Windows.Forms.ImageList imageListDevices;
+        private System.Windows.Forms.Timer WifiTimer;
     }
 }
 
