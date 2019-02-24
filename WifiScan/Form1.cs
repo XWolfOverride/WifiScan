@@ -21,6 +21,7 @@ namespace WifiScan
             AutoScaleMode = AutoScaleMode.Dpi;
             PopulateTree();
             DblBuf();
+            ShowWifi(null);
         }
 
         private void DblBuf()
@@ -50,16 +51,30 @@ namespace WifiScan
         private TreeNode GetNodeFor(Wifi wifi, TreeNodeCollection nodes)
         {
             foreach (TreeNode node in nodes)
-            {
-                if (wifi == node.Tag)
+                if (wifi.BSSID == ((Wifi)node.Tag).BSSID)
+                {
+                    node.Tag = wifi;
                     return node;
-            }
+                }
             TreeNode nnode = nodes.Add(wifi.SSID);
             nnode.Tag = wifi;
             nnode.ImageIndex = 1;
             nnode.SelectedImageIndex = 1;
-            nnode.ForeColor = wifi.Color;
+            nnode.ForeColor = wifi.Conf.Color;
             return nnode;
+        }
+
+        private TreeNode[] GetNodesFor(Wifi wifi)
+        {
+            List<TreeNode> result = new List<TreeNode>();
+            foreach (TreeNode nodeHW in tvTree.Nodes)
+            {
+                TreeNodeCollection nodes = nodeHW.Nodes;
+                foreach (TreeNode node in nodes)
+                    if (wifi.BSSID == ((Wifi)node.Tag).BSSID)
+                        result.Add(node);
+            }
+            return result.ToArray();
         }
 
         private void PopulateTree()
@@ -75,10 +90,14 @@ namespace WifiScan
                 foreach (Wifi wifi in wifis)
                 {
                     TreeNode nwnode = GetNodeFor(wifi, node.Nodes);
+                    nwnode.ImageIndex = nwnode.SelectedImageIndex = 1;
+                    nwnode.ForeColor = wifi.Conf.Color;
                     netnodes.Remove(nwnode);
                 }
                 foreach (TreeNode nwdel in netnodes)
-                    node.Nodes.Remove(nwdel);
+                {
+                    nwdel.ImageIndex = nwdel.SelectedImageIndex = 2;  //node.Nodes.Remove(nwdel);
+                }
                 if (empty && node.Nodes.Count > 0)
                     node.Expand();
             }
@@ -88,6 +107,36 @@ namespace WifiScan
         }
 
         #endregion
+
+        private void ShowWifi(Wifi w)
+        {
+            pwinfo.Tag = w;
+            if (w == null)
+                pwinfo.Visible = false;
+            else
+            {
+                WifiApi.HighlightBSSID = w.BSSID;
+                lbInfo.Text = w.SSID;
+                lbInfo2.Text = w.Active ? w.BSSID + ", Ch:" + w.Channel + ", Power:" + w.Signal : w.BSSID;
+                pbSignal.Value = w.Active ? (int)w.Signal : 0;
+                btColor.BackColor = w.Conf.Color;
+                cbVisible.Checked = w.Conf.Visible;
+                pwinfo.Visible = true;
+            }
+            scMain.Panel2.Invalidate();
+        }
+
+        private void UpdateNode(Wifi w)
+        {
+            if (w == null)
+                return;
+            TreeNode[] ns = GetNodesFor(w);
+            foreach (TreeNode n in ns)
+            {
+                n.StateImageIndex = w.Conf.Visible ? -1 : 3;
+                n.ForeColor = w.Conf.Color;
+            }
+        }
 
         private void WifiTimer_Tick(object sender, EventArgs e)
         {
@@ -99,6 +148,38 @@ namespace WifiScan
         private void splitContainer1_Panel2_Paint(object sender, PaintEventArgs e)
         {
             WifiApi.Paint(e.Graphics, scMain.Panel2.ClientSize);
+        }
+
+        private void tvTree_AfterSelect(object sender, TreeViewEventArgs e)
+        {
+            if (tvTree.SelectedNode == null)
+                return;
+            ShowWifi(tvTree.SelectedNode.Tag as Wifi);
+        }
+
+        private void btColor_Click(object sender, EventArgs e)
+        {
+            Wifi w = pwinfo.Tag as Wifi;
+            if (w == null)
+                return;
+            ColorDialog cd = new ColorDialog();
+            cd.Color = w.Conf.Color;
+            if (cd.ShowDialog() == DialogResult.OK)
+            {
+                w.Conf.Color = cd.Color;
+                ShowWifi(w);
+                UpdateNode(w);
+            }
+        }
+
+        private void cbVisible_CheckedChanged(object sender, EventArgs e)
+        {
+            Wifi w = pwinfo.Tag as Wifi;
+            if (w == null)
+                return;
+            w.Conf.Visible = cbVisible.Checked;
+            ShowWifi(w);
+            UpdateNode(w);
         }
     }
 }

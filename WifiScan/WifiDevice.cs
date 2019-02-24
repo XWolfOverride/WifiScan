@@ -41,6 +41,8 @@ namespace WifiScan
 
         #endregion
 
+        private bool alive;
+
         public static Wifi[] FetchAllNetworks()
         {
             List<Wifi> wifis = new List<Wifi>();
@@ -77,7 +79,15 @@ namespace WifiScan
         private Wifi[] GetNetworks()
         {
             Scan();
-            Wlan.WlanBssEntry[] wlanBssEntries = iface.GetNetworkBssList();
+            Wlan.WlanBssEntry[] wlanBssEntries;
+            try
+            {
+                wlanBssEntries = iface.GetNetworkBssList();
+            }
+            catch
+            {
+                return new Wifi[0];
+            }
             foreach (Wlan.WlanBssEntry network in wlanBssEntries)
             {
                 Wifi wifi = GetFor(network);
@@ -96,11 +106,20 @@ namespace WifiScan
             if (DateTime.Now.Subtract(lastScan).Seconds < 3)
                 return;
             lastScan = DateTime.Now;
-            iface.Scan();
+            try
+            {
+                alive = true;
+                iface.Scan();
+            }
+            catch
+            {
+                alive = false;
+            }
         }
 
         public Wifi[] Networks => GetNetworks();
 
         public string Name => iface.InterfaceDescription;
+        public bool Alive => alive;
     }
 }

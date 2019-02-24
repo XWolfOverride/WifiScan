@@ -9,19 +9,20 @@ namespace WifiScan
 {
     class WifiInfo
     {
+        WifiConf c;
         public WifiInfo(Wifi wifi)
         {
             BSSID = wifi.BSSID;
             SSID = wifi.SSID;
             Signal = wifi.Signal;
             Channel = wifi.Channel;
-            Color = wifi.Color;
+            c = wifi.Conf;
         }
 
         public string BSSID { get; }
         public string SSID { get; }
         public uint Signal { get; }
         public uint Channel { get; }
-        public Color Color { get; }
+        public WifiConf Conf => c;
     }
 }
