@@ -54,12 +54,16 @@
             this.tvTree.ImageIndex = 0;
             this.tvTree.ImageList = this.imageListDevices;
             this.tvTree.Location = new System.Drawing.Point(0, 0);
+            this.tvTree.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.tvTree.Name = "tvTree";
             this.tvTree.SelectedImageIndex = 0;
-            this.tvTree.Size = new System.Drawing.Size(350, 437);
+            this.tvTree.Size = new System.Drawing.Size(233, 285);
             this.tvTree.StateImageList = this.imageListDevices;
             this.tvTree.TabIndex = 0;
+            this.tvTree.DrawNode += new System.Windows.Forms.DrawTreeNodeEventHandler(this.tvTree_DrawNode);
             this.tvTree.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.tvTree_AfterSelect);
+            this.tvTree.DoubleClick += new System.EventHandler(this.tvTree_DoubleClick);
+            this.tvTree.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.tvTree_KeyPress);
             // 
             // imageListDevices
             // 
@@ -74,6 +78,7 @@
             // 
             this.scMain.Dock = System.Windows.Forms.DockStyle.Fill;
             this.scMain.Location = new System.Drawing.Point(0, 0);
+            this.scMain.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.scMain.Name = "scMain";
             // 
             // scMain.Panel1
@@ -84,9 +89,9 @@
             // scMain.Panel2
             // 
             this.scMain.Panel2.Paint += new System.Windows.Forms.PaintEventHandler(this.splitContainer1_Panel2_Paint);
-            this.scMain.Size = new System.Drawing.Size(1237, 567);
-            this.scMain.SplitterDistance = 350;
-            this.scMain.SplitterWidth = 15;
+            this.scMain.Size = new System.Drawing.Size(825, 369);
+            this.scMain.SplitterDistance = 233;
+            this.scMain.SplitterWidth = 10;
             this.scMain.TabIndex = 1;
             // 
             // pwinfo
@@ -97,9 +102,10 @@
             this.pwinfo.Controls.Add(this.btColor);
             this.pwinfo.Controls.Add(this.pbSignal);
             this.pwinfo.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.pwinfo.Location = new System.Drawing.Point(0, 437);
+            this.pwinfo.Location = new System.Drawing.Point(0, 285);
+            this.pwinfo.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.pwinfo.Name = "pwinfo";
-            this.pwinfo.Size = new System.Drawing.Size(350, 130);
+            this.pwinfo.Size = new System.Drawing.Size(233, 84);
             this.pwinfo.TabIndex = 2;
             // 
             // lbInfo2
@@ -108,20 +114,22 @@
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.lbInfo2.AutoSize = true;
-            this.lbInfo2.Location = new System.Drawing.Point(12, 23);
+            this.lbInfo2.Location = new System.Drawing.Point(8, 15);
+            this.lbInfo2.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.lbInfo2.Name = "lbInfo2";
-            this.lbInfo2.Size = new System.Drawing.Size(21, 20);
+            this.lbInfo2.Size = new System.Drawing.Size(16, 13);
             this.lbInfo2.TabIndex = 4;
             this.lbInfo2.Text = "   ";
             // 
             // cbVisible
             // 
             this.cbVisible.AutoSize = true;
-            this.cbVisible.Location = new System.Drawing.Point(12, 56);
+            this.cbVisible.Location = new System.Drawing.Point(8, 36);
+            this.cbVisible.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.cbVisible.Name = "cbVisible";
-            this.cbVisible.Size = new System.Drawing.Size(139, 24);
+            this.cbVisible.Size = new System.Drawing.Size(102, 17);
             this.cbVisible.TabIndex = 3;
-            this.cbVisible.Text = "Show graphics";
+            this.cbVisible.Text = "Show in graphic";
             this.cbVisible.UseVisualStyleBackColor = true;
             this.cbVisible.CheckedChanged += new System.EventHandler(this.cbVisible_CheckedChanged);
             // 
@@ -132,18 +140,20 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.lbInfo.AutoSize = true;
             this.lbInfo.Font = new System.Drawing.Font("Microsoft Sans Serif", 8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lbInfo.Location = new System.Drawing.Point(12, 3);
+            this.lbInfo.Location = new System.Drawing.Point(8, 2);
+            this.lbInfo.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.lbInfo.Name = "lbInfo";
-            this.lbInfo.Size = new System.Drawing.Size(24, 20);
+            this.lbInfo.Size = new System.Drawing.Size(19, 13);
             this.lbInfo.TabIndex = 2;
             this.lbInfo.Text = "   ";
             // 
             // btColor
             // 
             this.btColor.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.btColor.Location = new System.Drawing.Point(315, 86);
+            this.btColor.Location = new System.Drawing.Point(210, 56);
+            this.btColor.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.btColor.Name = "btColor";
-            this.btColor.Size = new System.Drawing.Size(32, 32);
+            this.btColor.Size = new System.Drawing.Size(21, 21);
             this.btColor.TabIndex = 1;
             this.btColor.UseVisualStyleBackColor = false;
             this.btColor.Click += new System.EventHandler(this.btColor_Click);
@@ -152,9 +162,10 @@
             // 
             this.pbSignal.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.pbSignal.Location = new System.Drawing.Point(12, 86);
+            this.pbSignal.Location = new System.Drawing.Point(8, 56);
+            this.pbSignal.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.pbSignal.Name = "pbSignal";
-            this.pbSignal.Size = new System.Drawing.Size(297, 32);
+            this.pbSignal.Size = new System.Drawing.Size(198, 21);
             this.pbSignal.TabIndex = 0;
             // 
             // WifiTimer
@@ -165,14 +176,15 @@
             // 
             // Form1
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 20F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1237, 567);
+            this.ClientSize = new System.Drawing.Size(825, 369);
             this.Controls.Add(this.scMain);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
+            this.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.Name = "Form1";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
-            this.Text = "WifiScan V1.1";
+            this.Text = "WifiScan V1.2 by XWolf Override";
             this.scMain.Panel1.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.scMain)).EndInit();
             this.scMain.ResumeLayout(false);

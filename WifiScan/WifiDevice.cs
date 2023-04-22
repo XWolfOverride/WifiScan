@@ -7,6 +7,9 @@ using System.Threading.Tasks;
 
 namespace WifiScan
 {
+    /// <summary>
+    /// Wifi Antenas on computer.
+    /// </summary>
     class WifiDevice
     {
 
@@ -29,7 +32,7 @@ namespace WifiScan
 
         public static List<WifiDevice> List()
         {
-            List<WifiDevice> del = new List<WifiDevice>(devices);
+            List<WifiDevice> del = new List<WifiDevice>(devices); // Devices to delete
             foreach (WlanClient.WlanInterface wlanIface in client.Interfaces)
             {
                 WifiDevice dev = GetFor(wlanIface);
