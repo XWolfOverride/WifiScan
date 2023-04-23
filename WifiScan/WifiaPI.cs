@@ -41,12 +41,6 @@ namespace WifiScan
             return ssid;
         }
 
-        public static uint GetChannel(this Wlan.WlanBssEntry wifi)
-        {
-            uint ch = (wifi.chCenterFrequency - 2400000) / 5000;
-            return ch - 1;
-        }
-
         #endregion
 
         public static void Snapshoot()
@@ -69,12 +63,12 @@ namespace WifiScan
             return snap[snap.Count - 1];
         }
 
-        private static List<WifiInfo> GetNetworksInChannel(int ch)
+        private static List<WifiInfo> GetNetworksInChannel(Wifi.WifiRangle range, int ch)
         {
             List<WifiInfo> result = new List<WifiInfo>();
             List<WifiInfo> scan = GetLastScan();
             foreach (WifiInfo wii in scan)
-                if (wii.Channel == ch)
+                if (wii.Range == range && wii.Channel == ch)
                     result.Add(wii);
             return result;
         }
@@ -89,6 +83,15 @@ namespace WifiScan
             //Draw Guidelines
             float scale = g.DpiX / 96;
             float hh2 = sz.Height / 2f;
+            //Vertical (channels)
+            float chw6 = (sz.Width * 4) / 16f;
+            for (int i = 1; i <= 14; i++)
+            {
+                int x = (int)((sz.Width * (i + 1)) / 16f);
+                g.DrawLine(pLineDark2, new PointF(x, sz.Height), new PointF(x, hh2));
+                g.DrawString("" + i, font, bText, new PointF(x - 10, sz.Height - (CHART_FOOT * scale)));
+            }
+            //Horizontal
             g.DrawLine(pLineLight, new Point(0, (int)hh2), new Point(sz.Width, (int)hh2));
             for (int i = 1; i < 4; i++)
             {
@@ -98,13 +101,10 @@ namespace WifiScan
                 g.DrawLine(pLineDark, new PointF(0, hl2), new PointF(sz.Width, hl2));
             }
             //Draw Channels
-            float chw6 = (sz.Width * 4) / 16f;
             for (int i = 1; i <= 14; i++)
             {
                 int x = (int)((sz.Width * (i + 1)) / 16f);
-                g.DrawString("" + i, font, bText, new PointF(x - 10, sz.Height - (CHART_FOOT * scale)));
-                g.DrawLine(pLineDark2, new PointF(x, sz.Height), new PointF(x, hh2));
-                List<WifiInfo> chw = GetNetworksInChannel(i);
+                List<WifiInfo> chw = GetNetworksInChannel(Wifi.WifiRangle.G2_4, i);
                 foreach (WifiInfo wii in chw)
                 {
                     if (!wii.Conf.Visible)

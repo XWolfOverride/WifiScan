@@ -49,6 +49,7 @@
             // tvTree
             // 
             this.tvTree.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.tvTree.DrawMode = System.Windows.Forms.TreeViewDrawMode.OwnerDrawAll;
             this.tvTree.FullRowSelect = true;
             this.tvTree.HideSelection = false;
             this.tvTree.ImageIndex = 0;
@@ -57,7 +58,10 @@
             this.tvTree.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.tvTree.Name = "tvTree";
             this.tvTree.SelectedImageIndex = 0;
-            this.tvTree.Size = new System.Drawing.Size(233, 285);
+            this.tvTree.ShowLines = false;
+            this.tvTree.ShowPlusMinus = false;
+            this.tvTree.ShowRootLines = false;
+            this.tvTree.Size = new System.Drawing.Size(238, 435);
             this.tvTree.StateImageList = this.imageListDevices;
             this.tvTree.TabIndex = 0;
             this.tvTree.DrawNode += new System.Windows.Forms.DrawTreeNodeEventHandler(this.tvTree_DrawNode);
@@ -89,8 +93,8 @@
             // scMain.Panel2
             // 
             this.scMain.Panel2.Paint += new System.Windows.Forms.PaintEventHandler(this.splitContainer1_Panel2_Paint);
-            this.scMain.Size = new System.Drawing.Size(825, 369);
-            this.scMain.SplitterDistance = 233;
+            this.scMain.Size = new System.Drawing.Size(1078, 519);
+            this.scMain.SplitterDistance = 238;
             this.scMain.SplitterWidth = 10;
             this.scMain.TabIndex = 1;
             // 
@@ -102,10 +106,10 @@
             this.pwinfo.Controls.Add(this.btColor);
             this.pwinfo.Controls.Add(this.pbSignal);
             this.pwinfo.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.pwinfo.Location = new System.Drawing.Point(0, 285);
+            this.pwinfo.Location = new System.Drawing.Point(0, 435);
             this.pwinfo.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.pwinfo.Name = "pwinfo";
-            this.pwinfo.Size = new System.Drawing.Size(233, 84);
+            this.pwinfo.Size = new System.Drawing.Size(238, 84);
             this.pwinfo.TabIndex = 2;
             // 
             // lbInfo2
@@ -150,7 +154,7 @@
             // btColor
             // 
             this.btColor.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.btColor.Location = new System.Drawing.Point(210, 56);
+            this.btColor.Location = new System.Drawing.Point(215, 56);
             this.btColor.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.btColor.Name = "btColor";
             this.btColor.Size = new System.Drawing.Size(21, 21);
@@ -165,7 +169,7 @@
             this.pbSignal.Location = new System.Drawing.Point(8, 56);
             this.pbSignal.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.pbSignal.Name = "pbSignal";
-            this.pbSignal.Size = new System.Drawing.Size(198, 21);
+            this.pbSignal.Size = new System.Drawing.Size(203, 21);
             this.pbSignal.TabIndex = 0;
             // 
             // WifiTimer
@@ -178,7 +182,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(825, 369);
+            this.ClientSize = new System.Drawing.Size(1078, 519);
             this.Controls.Add(this.scMain);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);

@@ -16,6 +16,7 @@ namespace WifiScan
             SSID = wifi.SSID;
             Signal = wifi.Signal;
             Channel = wifi.Channel;
+            Range = wifi.Range;
             c = wifi.Conf;
         }
 
@@ -23,6 +24,7 @@ namespace WifiScan
         public string SSID { get; }
         public uint Signal { get; }
         public uint Channel { get; }
+        public Wifi.WifiRangle Range { get; }
         public WifiConf Conf => c;
     }
 }

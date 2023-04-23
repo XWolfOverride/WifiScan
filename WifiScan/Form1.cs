@@ -16,7 +16,7 @@ namespace WifiScan
     public partial class Form1 : Form
     {
         // Create a Font object for the node tags.
-        Font tagFont = new Font("Helvetica", 8, FontStyle.Bold);
+        Font tagFont = new Font("Helvetica", 7, FontStyle.Bold);
 
         public Form1()
         {
@@ -38,7 +38,9 @@ namespace WifiScan
 
             objMethodInfo.Invoke(scMain.Panel1, objArgs);
             objMethodInfo.Invoke(scMain.Panel2, objArgs);
-            //objMethodInfo.Invoke(tvTree, objArgs);
+            objArgs = new object[] { ControlStyles.AllPaintingInWmPaint |
+                             ControlStyles.OptimizedDoubleBuffer, true };
+            objMethodInfo.Invoke(tvTree, objArgs);
         }
 
         #region Tree Management
@@ -61,7 +63,7 @@ namespace WifiScan
                     node.Tag = wifi;
                     return node;
                 }
-            TreeNode nnode = nodes.Add("");
+            TreeNode nnode = nodes.Add(wifi.DisplayName);
             nnode.Tag = wifi;
             return nnode;
         }
@@ -81,6 +83,7 @@ namespace WifiScan
 
         private void PopulateTree()
         {
+            tvTree.BeginUpdate();
             ArrayList nodesToDelete = new ArrayList(tvTree.Nodes);// Fill with all (discard found later)
             foreach (WifiDevice dev in WifiDevice.List())
             {
@@ -92,16 +95,9 @@ namespace WifiScan
                 foreach (Wifi wifi in wifis)
                 {
                     TreeNode nwnode = GetNodeFor(wifi, node.Nodes);
-                    if (string.IsNullOrEmpty(wifi.SSID))
-                    {
-                        nwnode.Text = $"[{wifi.BSSID}]"; // Update network name (for configuration changes)
-                    }
-                    else
-                    {
-                        nwnode.Text = wifi.SSID; // Update network name (for configuration changes)
-                    }
+                    if (nwnode.Text != wifi.DisplayName)
+                        nwnode.Text = wifi.DisplayName; // Update network name (for configuration changes)
                     nwnode.ImageIndex = nwnode.SelectedImageIndex = 1;
-                    nwnode.BackColor = wifi.Conf.Color;
                     disabledNetNodes.Remove(nwnode);
                 }
                 foreach (TreeNode nwdel in disabledNetNodes)
@@ -114,6 +110,7 @@ namespace WifiScan
             // remove old
             foreach (TreeNode ndel in nodesToDelete)
                 tvTree.Nodes.Remove(ndel);
+            tvTree.EndUpdate();
         }
 
         #endregion
@@ -144,32 +141,8 @@ namespace WifiScan
             foreach (TreeNode n in ns)
             {
                 n.StateImageIndex = w.Conf.Visible ? -1 : 3;
-                n.BackColor = w.Conf.Color;
             }
             scMain.Panel2.Invalidate();
-        }
-
-        // Returns the bounds of the specified node, including the region 
-        // occupied by the node label and any node tag displayed.
-        private Rectangle NodeBounds(TreeNode node)
-        {
-            // Set the return value to the normal node bounds.
-            Rectangle bounds = node.Bounds;
-            if (node.Tag != null)
-            {
-                // Retrieve a Graphics object from the TreeView handle
-                // and use it to calculate the display width of the tag.
-                Graphics g = tvTree.CreateGraphics();
-                int tagWidth = (int)g.MeasureString
-                    (node.Tag.ToString(), tagFont).Width + 6;
-
-                // Adjust the node bounds using the calculated value.
-                bounds.Offset(tagWidth / 2, 0);
-                bounds = Rectangle.Inflate(bounds, tagWidth / 2, 0);
-                g.Dispose();
-            }
-
-            return bounds;
         }
 
         private void WifiTimer_Tick(object sender, EventArgs e)
@@ -243,51 +216,38 @@ namespace WifiScan
 
         private void tvTree_DrawNode(object sender, DrawTreeNodeEventArgs e)
         {
-            // Draw the background and node text for a selected node.
-            if ((e.State & TreeNodeStates.Selected) != 0)
+            if (imageListDevices.Images.Count == 0)
+                return;
+            if (e.Node.Tag is Wifi w)
             {
-                // Draw the background of the selected node. The NodeBounds
-                // method makes the highlight rectangle large enough to
-                // include the text of a node tag, if one is present.
-                e.Graphics.FillRectangle(Brushes.Green, NodeBounds(e.Node));
-
-                // Retrieve the node font. If the node font has not been set,
-                // use the TreeView font.
-                Font nodeFont = e.Node.NodeFont;
-                if (nodeFont == null) nodeFont = ((System.Windows.Forms.TreeView)sender).Font;
-
-                // Draw the node text.
-                e.Graphics.DrawString(e.Node.Text, nodeFont, Brushes.White,
-                    Rectangle.Inflate(e.Bounds, 2, 0));
-            }
-
-            // Use the default background and node text.
-            else
-            {
-                e.DrawDefault = true;
-            }
-
-            // If a node tag is present, draw its string representation 
-            // to the right of the label text.
-            if (e.Node.Tag != null)
-            {
-                e.Graphics.DrawString(e.Node.Tag.ToString(), tagFont,
-                    Brushes.Yellow, e.Bounds.Right + 2, e.Bounds.Top);
-            }
-
-            // If the node has focus, draw the focus rectangle large, making
-            // it large enough to include the text of the node tag, if present.
-            if ((e.State & TreeNodeStates.Focused) != 0)
-            {
-                using (Pen focusPen = new Pen(Color.Black))
+                //bool selected = (e.State & TreeNodeStates.Selected) != 0;
+                bool focused = (e.State & TreeNodeStates.Focused) != 0;
+                using (Brush color = new SolidBrush(w.Conf.Color))
+                using (Brush bbg = new SolidBrush(focused ? SystemColors.Highlight : tvTree.BackColor))
+                using (Brush bfont = new SolidBrush(focused ? SystemColors.HighlightText : tvTree.ForeColor))
                 {
-                    focusPen.DashStyle = System.Drawing.Drawing2D.DashStyle.Dot;
-                    Rectangle focusBounds = NodeBounds(e.Node);
-                    focusBounds.Size = new Size(focusBounds.Width - 1,
-                    focusBounds.Height - 1);
-                    e.Graphics.DrawRectangle(focusPen, focusBounds);
+                    Font nodeFont = e.Node.NodeFont ?? tvTree.Font;
+                    e.Graphics.FillRectangle(bbg, e.Bounds);
+                    int x = e.Bounds.X + 15;
+                    int y = e.Bounds.Y;
+                    if (e.Node.StateImageIndex >= 0)
+                        e.Graphics.DrawImage(imageListDevices.Images[e.Node.StateImageIndex], x, y+10, 15, 15);
+                    x += 10;
+                    imageListDevices.Draw(e.Graphics, x, y, e.Node.ImageIndex);
+                    x += 25;
+                    y++;
+                    e.Graphics.FillRectangle(color, new Rectangle(x,y,5,e.Bounds.Height-2));
+                    x += 5;
+                    e.Graphics.DrawString(e.Node.Text, nodeFont, bfont, x, y);
+                    x += 5;
+                    y += 13;
+                    e.Graphics.DrawString($"{w.RangeName}, Ch: {w.Channel}, Power: {w.Signal}%", tagFont, Brushes.Gray, x, y);
+                    
                 }
             }
+            else
+                e.DrawDefault = true;
+
         }
     }
 }
