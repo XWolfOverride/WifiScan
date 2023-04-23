@@ -97,12 +97,13 @@ namespace WifiScan
                     TreeNode nwnode = GetNodeFor(wifi, node.Nodes);
                     if (nwnode.Text != wifi.DisplayName)
                         nwnode.Text = wifi.DisplayName; // Update network name (for configuration changes)
-                    nwnode.ImageIndex = nwnode.SelectedImageIndex = 1;
+                    int ico = wifi.Signal > 70 ? 1 : wifi.Signal > 35 ? 2 : 3;
+                    nwnode.ImageIndex = nwnode.SelectedImageIndex = ico;
                     disabledNetNodes.Remove(nwnode);
                 }
                 foreach (TreeNode nwdel in disabledNetNodes)
                 {
-                    nwdel.ImageIndex = nwdel.SelectedImageIndex = 2;
+                    nwdel.ImageIndex = nwdel.SelectedImageIndex = 4;
                 }
                 if (wasEmpty && node.Nodes.Count > 0)
                     node.Expand();
@@ -140,7 +141,7 @@ namespace WifiScan
             TreeNode[] ns = GetNodesFor(w);
             foreach (TreeNode n in ns)
             {
-                n.StateImageIndex = w.Conf.Visible ? -1 : 3;
+                n.StateImageIndex = w.Conf.Visible ? -1 : 5;
             }
             scMain.Panel2.Invalidate();
         }
@@ -220,7 +221,6 @@ namespace WifiScan
                 return;
             if (e.Node.Tag is Wifi w)
             {
-                //bool selected = (e.State & TreeNodeStates.Selected) != 0;
                 bool focused = (e.State & TreeNodeStates.Focused) != 0;
                 using (Brush color = new SolidBrush(w.Conf.Color))
                 using (Brush bbg = new SolidBrush(focused ? SystemColors.Highlight : tvTree.BackColor))
@@ -228,21 +228,21 @@ namespace WifiScan
                 {
                     Font nodeFont = e.Node.NodeFont ?? tvTree.Font;
                     e.Graphics.FillRectangle(bbg, e.Bounds);
-                    int x = e.Bounds.X + 15;
+                    int x = e.Bounds.X + 10;
                     int y = e.Bounds.Y;
                     if (e.Node.StateImageIndex >= 0)
-                        e.Graphics.DrawImage(imageListDevices.Images[e.Node.StateImageIndex], x, y+10, 15, 15);
-                    x += 10;
+                        e.Graphics.DrawImage(imageListDevices.Images[e.Node.StateImageIndex], x, y + 8, 17, 17);
+                    x += 8;
                     imageListDevices.Draw(e.Graphics, x, y, e.Node.ImageIndex);
-                    x += 25;
+                    x += 27;
                     y++;
-                    e.Graphics.FillRectangle(color, new Rectangle(x,y,5,e.Bounds.Height-2));
-                    x += 5;
+                    e.Graphics.FillRectangle(color, new Rectangle(x, y, 7, e.Bounds.Height - 2));
+                    x += 9;
                     e.Graphics.DrawString(e.Node.Text, nodeFont, bfont, x, y);
                     x += 5;
                     y += 13;
                     e.Graphics.DrawString($"{w.RangeName}, Ch: {w.Channel}, Power: {w.Signal}%", tagFont, Brushes.Gray, x, y);
-                    
+
                 }
             }
             else

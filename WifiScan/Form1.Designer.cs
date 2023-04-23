@@ -40,6 +40,7 @@
             this.btColor = new System.Windows.Forms.Button();
             this.pbSignal = new System.Windows.Forms.ProgressBar();
             this.WifiTimer = new System.Windows.Forms.Timer(this.components);
+            this.panel1 = new System.Windows.Forms.Panel();
             ((System.ComponentModel.ISupportInitialize)(this.scMain)).BeginInit();
             this.scMain.Panel1.SuspendLayout();
             this.scMain.SuspendLayout();
@@ -61,7 +62,7 @@
             this.tvTree.ShowLines = false;
             this.tvTree.ShowPlusMinus = false;
             this.tvTree.ShowRootLines = false;
-            this.tvTree.Size = new System.Drawing.Size(238, 435);
+            this.tvTree.Size = new System.Drawing.Size(238, 400);
             this.tvTree.StateImageList = this.imageListDevices;
             this.tvTree.TabIndex = 0;
             this.tvTree.DrawNode += new System.Windows.Forms.DrawTreeNodeEventHandler(this.tvTree_DrawNode);
@@ -73,10 +74,12 @@
             // 
             this.imageListDevices.ImageStream = ((System.Windows.Forms.ImageListStreamer)(resources.GetObject("imageListDevices.ImageStream")));
             this.imageListDevices.TransparentColor = System.Drawing.Color.Transparent;
-            this.imageListDevices.Images.SetKeyName(0, "iconfinder_network_card_82824.png");
-            this.imageListDevices.Images.SetKeyName(1, "iconfinder_wifi_2639756.ico");
-            this.imageListDevices.Images.SetKeyName(2, "no wifi.png");
-            this.imageListDevices.Images.SetKeyName(3, "hidden_invisible_hide_eye_private-512.png");
+            this.imageListDevices.Images.SetKeyName(0, "Net-card.png");
+            this.imageListDevices.Images.SetKeyName(1, "Wifi-ok.png");
+            this.imageListDevices.Images.SetKeyName(2, "Wifi-2-3.png");
+            this.imageListDevices.Images.SetKeyName(3, "Wifi-1-3.png");
+            this.imageListDevices.Images.SetKeyName(4, "Wifi-ko.png");
+            this.imageListDevices.Images.SetKeyName(5, "hide.png");
             // 
             // scMain
             // 
@@ -89,6 +92,7 @@
             // 
             this.scMain.Panel1.Controls.Add(this.tvTree);
             this.scMain.Panel1.Controls.Add(this.pwinfo);
+            this.scMain.Panel1.Controls.Add(this.panel1);
             // 
             // scMain.Panel2
             // 
@@ -106,7 +110,7 @@
             this.pwinfo.Controls.Add(this.btColor);
             this.pwinfo.Controls.Add(this.pbSignal);
             this.pwinfo.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.pwinfo.Location = new System.Drawing.Point(0, 435);
+            this.pwinfo.Location = new System.Drawing.Point(0, 400);
             this.pwinfo.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.pwinfo.Name = "pwinfo";
             this.pwinfo.Size = new System.Drawing.Size(238, 84);
@@ -178,6 +182,14 @@
             this.WifiTimer.Interval = 1000;
             this.WifiTimer.Tick += new System.EventHandler(this.WifiTimer_Tick);
             // 
+            // panel1
+            // 
+            this.panel1.Dock = System.Windows.Forms.DockStyle.Bottom;
+            this.panel1.Location = new System.Drawing.Point(0, 484);
+            this.panel1.Name = "panel1";
+            this.panel1.Size = new System.Drawing.Size(238, 35);
+            this.panel1.TabIndex = 3;
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -210,6 +222,7 @@
         private System.Windows.Forms.Label lbInfo;
         private System.Windows.Forms.CheckBox cbVisible;
         private System.Windows.Forms.Label lbInfo2;
+        private System.Windows.Forms.Panel panel1;
     }
 }
 
